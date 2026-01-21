@@ -1,0 +1,64 @@
+# Habilitar o mod_rewrite
+RewriteEngine On
+
+# Redirect /noticia/{slug} to noticia.php?slug={slug}
+RewriteRule ^noticia/([a-z0-9-]+)/?$ noticia.php?slug=$1 [L,QSA]
+
+# Redirect /financeiro/{slug} to financeiro.php?slug={slug}
+RewriteRule ^financeiro/([a-z0-9-]+)/?$ financeiro.php?slug=$1 [L,QSA]
+
+# Redirect /balancete/{slug} to balancete.php?slug={slug}
+RewriteRule ^balancete/([a-z0-9-]+)/?$ balancete.php?slug=$1 [L,QSA]
+
+# Redirect /conselho/{slug} to conselho.php?slug={slug}
+RewriteRule ^conselho/([a-z0-9-]+)/?$ conselho.php?slug=$1 [L,QSA]
+
+# Redirect /demonstrativo/{slug} to demonstrativo.php?slug={slug}
+RewriteRule ^demonstrativo/([a-z0-9-]+)/?$ demonstrativo.php?slug=$1 [L,QSA]
+
+# === Páginas de Acesso Rápido (URLs diretas na raiz) ===
+# Legislação
+RewriteRule ^legislacao/?$ pagina.php?slug=legislacao [L,QSA]
+
+# Estrutura Organizacional
+RewriteRule ^estrutura-organizacional/?$ pagina.php?slug=estrutura-organizacional [L,QSA]
+
+# Código de Ética
+RewriteRule ^codigo-etica/?$ pagina.php?slug=codigo-etica [L,QSA]
+
+# Política de Investimentos
+RewriteRule ^politica-investimentos/?$ pagina.php?slug=politica-investimentos [L,QSA]
+
+# Regime Próprio de Previdência
+RewriteRule ^regime-proprio/?$ pagina.php?slug=regime-proprio [L,QSA]
+
+# Taxa de Administração
+RewriteRule ^taxa-administracao/?$ pagina.php?slug=taxa-administracao [L,QSA]
+
+# Avaliação Atuarial
+RewriteRule ^avaliacao-atuarial/?$ pagina.php?slug=avaliacao-atuarial [L,QSA]
+
+# Certificados e Certidões
+RewriteRule ^certificados-certidoes/?$ pagina.php?slug=certificados-certidoes [L,QSA]
+
+# Rota genérica para outras páginas de acesso rápido (fallback)
+# Atenção: Deve vir ANTES da regra de adicionar .php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php !-f
+RewriteCond %{DOCUMENT_ROOT}/pagina.php -f
+RewriteRule ^([a-z0-9-]+)/?$ pagina.php?slug=$1 [L,QSA]
+
+# Redirecionar se acessar com .php na URL
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.php -f
+RewriteRule ^(.*)\.php$ /$1 [R=301,L]
+
+# Adicionar .php internamente se o arquivo existir
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.+)$ $1.php [L,QSA]
+
+# Definir index.php como arquivo padrão
+DirectoryIndex index.php index.html

@@ -1,0 +1,15 @@
+# Bloquear listagem de diretórios
+Options -Indexes
+
+# Negar acesso a arquivos PHP por segurança
+<FilesMatch "\.(php|phtml|php3|php4|php5|phps)$">
+    Order Deny,Allow
+    Deny from all
+</FilesMatch>
+
+# Permitir acesso a imagens e outros arquivos seguros
+<FilesMatch "\.(jpg|jpeg|png|gif|webp|svg|pdf|doc|docx|xls|xlsx|zip)$">
+    Order Allow,Deny
+    Allow from all
+    Require all granted
+</FilesMatch>

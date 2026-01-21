@@ -1,0 +1,61 @@
+# 🌐 Networks
+networks:
+  externa:
+    external: true
+  interna:
+    external: true
+
+services:
+  FAP:
+    image: gustavo9br/php8.2:latest
+    networks:
+      - externa
+      - interna
+    environment:
+      - TZ=America/Sao_Paulo
+    volumes:
+      - /root/FAP:/var/www/html
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+      placement:
+        constraints: [ node.role == manager ]
+      labels:
+        # 🚀 Labels do Traefik para aplicação
+        traefik.enable: "true"
+        traefik.docker.network: "externa"
+        
+        # Configuração HTTP para redirecionamento HTTPS
+        traefik.http.routers.FAP-http.rule: "Host(`padua.fap.rj.gov.br`)"
+        traefik.http.routers.FAP-http.entrypoints: "web"
+        traefik.http.routers.FAP-http.middlewares: "redirect-to-https"
+        
+        # Configuração HTTPS principal
+        traefik.http.routers.FAP.rule: "Host(`padua.fap.rj.gov.br`)"
+        traefik.http.routers.FAP.entrypoints: "websecure"
+        traefik.http.routers.FAP.tls: "true"
+        traefik.http.routers.FAP.tls.certresolver: "le"
+        traefik.http.routers.FAP.service: "FAP"
+        
+        # Configuração do serviço
+        traefik.http.services.FAP.loadbalancer.server.port: "80"
+        
+        # Middleware para redirecionamento HTTPS
+        traefik.http.middlewares.redirect-to-https.redirectscheme.scheme: "https"
+        traefik.http.middlewares.redirect-to-https.redirectscheme.permanent: "true"
+      # Recursos comentados para VPS com 22 cores e 12GB RAM
+      # resources:
+      #   limits:
+      #     memory: 512M
+      #   reservations:
+      #     memory: 256M

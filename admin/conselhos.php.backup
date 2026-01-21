@@ -1,0 +1,194 @@
+<?php
+session_start();
+require_once '../config/database.php';
+
+if (!isset($_SESSION['admin_logged_in'])) {
+    header('Location: login.php');
+    exit;
+}
+
+$pdo = Database::getInstance()->getConnection();
+
+// Processar ações
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['action'])) {
+        switch ($_POST['action']) {
+            case 'add_secao':
+                $stmt = $pdo->prepare("INSERT INTO conselho_secoes (conselho_id, titulo, ordem) VALUES (?, ?, ?)");
+                $stmt->execute([$_POST['conselho_id'], $_POST['titulo'], $_POST['ordem'] ?? 0]);
+                $success = "Seção adicionada com sucesso!";
+                break;
+                
+            case 'add_ano':
+                $stmt = $pdo->prepare("INSERT INTO conselho_anos (secao_id, ano) VALUES (?, ?)");
+                $stmt->execute([$_POST['secao_id'], $_POST['ano']]);
+                $success = "Ano adicionado com sucesso!";
+                break;
+                
+            case 'add_arquivo':
+                if (isset($_FILES['arquivo']) && $_FILES['arquivo']['error'] === 0) {
+                    $upload_dir = '../uploads/conselhos/';
+                    if (!is_dir($upload_dir)) {
+                        mkdir($upload_dir, 0755, true);
+                    }
+                    
+                    $filename = time() . '_' . basename($_FILES['arquivo']['name']);
+                    $filepath = $upload_dir . $filename;
+                    
+                    if (move_uploaded_file($_FILES['arquivo']['tmp_name'], $filepath)) {
+                        $stmt = $pdo->prepare("INSERT INTO conselho_arquivos (ano_id, titulo, arquivo) VALUES (?, ?, ?)");
+                        $stmt->execute([$_POST['ano_id'], $_POST['titulo'], $filename]);
+                        $success = "Arquivo adicionado com sucesso!";
+                    }
+                }
+                break;
+                
+            case 'delete_arquivo':
+                $stmt = $pdo->prepare("SELECT arquivo FROM conselho_arquivos WHERE id = ?");
+                $stmt->execute([$_POST['id']]);
+                $arquivo = $stmt->fetchColumn();
+                
+                if ($arquivo && file_exists('../uploads/conselhos/' . $arquivo)) {
+                    unlink('../uploads/conselhos/' . $arquivo);
+                }
+                
+                $stmt = $pdo->prepare("DELETE FROM conselho_arquivos WHERE id = ?");
+                $stmt->execute([$_POST['id']]);
+                $success = "Arquivo deletado com sucesso!";
+                break;
+        }
+    }
+}
+
+// Buscar conselhos
+$conselhos = $pdo->query("SELECT * FROM conselhos WHERE ativo = 1 ORDER BY ordem ASC")->fetchAll();
+$conselho_id = $_GET['conselho_id'] ?? ($conselhos[0]['id'] ?? null);
+
+// Buscar seções do conselho selecionado
+$secoes = [];
+if ($conselho_id) {
+    $stmt = $pdo->prepare("SELECT * FROM conselho_secoes WHERE conselho_id = ? AND ativo = 1 ORDER BY ordem ASC");
+    $stmt->execute([$conselho_id]);
+    $secoes = $stmt->fetchAll();
+}
+?>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Conselhos e Comitês - Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+<?php include 'includes/header.php'; ?>
+
+<div class="container mx-auto px-6 py-8">
+    
+    <div class="flex items-center justify-between mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">Conselhos e Comitês</h1>
+    </div>
+
+    <?php if (isset($success)): ?>
+    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+        <?php echo $success; ?>
+    </div>
+    <?php endif; ?>
+
+    <!-- Seletor de Conselho -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <label class="block text-gray-700 font-semibold mb-2">Selecione o Conselho:</label>
+        <select onchange="window.location.href='?conselho_id=' + this.value" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+            <?php foreach ($conselhos as $c): ?>
+            <option value="<?php echo $c['id']; ?>" <?php echo $c['id'] == $conselho_id ? 'selected' : ''; ?>>
+                <?php echo htmlspecialchars($c['nome']); ?>
+            </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+
+    <?php if ($conselho_id): ?>
+    
+    <!-- Adicionar Nova Seção -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Adicionar Nova Seção</h2>
+        <form method="POST" class="flex gap-4">
+            <input type="hidden" name="action" value="add_secao">
+            <input type="hidden" name="conselho_id" value="<?php echo $conselho_id; ?>">
+            <input type="text" name="titulo" placeholder="Ex: Calendário de Reuniões" required class="flex-1 border border-gray-300 rounded-lg px-4 py-2">
+            <input type="number" name="ordem" placeholder="Ordem" class="w-24 border border-gray-300 rounded-lg px-4 py-2">
+            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">Adicionar</button>
+        </form>
+    </div>
+
+    <!-- Seções Existentes -->
+    <?php foreach ($secoes as $secao): 
+        // Buscar anos da seção
+        $stmt = $pdo->prepare("SELECT * FROM conselho_anos WHERE secao_id = ? ORDER BY ano DESC");
+        $stmt->execute([$secao['id']]);
+        $anos = $stmt->fetchAll();
+    ?>
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4"><?php echo htmlspecialchars($secao['titulo']); ?></h2>
+        
+        <!-- Adicionar Ano -->
+        <form method="POST" class="flex gap-4 mb-6">
+            <input type="hidden" name="action" value="add_ano">
+            <input type="hidden" name="secao_id" value="<?php echo $secao['id']; ?>">
+            <input type="number" name="ano" placeholder="Ano (ex: 2025)" required min="2000" max="2100" class="flex-1 border border-gray-300 rounded-lg px-4 py-2">
+            <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700">Adicionar Ano</button>
+        </form>
+        
+        <!-- Anos -->
+        <div class="space-y-4">
+            <?php foreach ($anos as $ano): 
+                // Buscar arquivos do ano
+                $stmt = $pdo->prepare("SELECT * FROM conselho_arquivos WHERE ano_id = ? ORDER BY ordem ASC");
+                $stmt->execute([$ano['id']]);
+                $arquivos = $stmt->fetchAll();
+            ?>
+            <div class="border border-gray-200 rounded-lg p-4">
+                <h3 class="text-lg font-semibold text-gray-800 mb-3">Ano: <?php echo $ano['ano']; ?></h3>
+                
+                <!-- Adicionar Arquivo -->
+                <form method="POST" enctype="multipart/form-data" class="flex gap-4 mb-4">
+                    <input type="hidden" name="action" value="add_arquivo">
+                    <input type="hidden" name="ano_id" value="<?php echo $ano['id']; ?>">
+                    <input type="text" name="titulo" placeholder="Título do arquivo" required class="flex-1 border border-gray-300 rounded-lg px-4 py-2">
+                    <input type="file" name="arquivo" required class="border border-gray-300 rounded-lg px-4 py-2">
+                    <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">Upload</button>
+                </form>
+                
+                <!-- Lista de Arquivos -->
+                <?php if (count($arquivos) > 0): ?>
+                <ul class="space-y-2">
+                    <?php foreach ($arquivos as $arquivo): ?>
+                    <li class="flex items-center justify-between bg-gray-50 p-3 rounded">
+                        <span class="text-gray-700"><?php echo htmlspecialchars($arquivo['titulo']); ?></span>
+                        <div class="flex gap-2">
+                            <a href="../uploads/conselhos/<?php echo htmlspecialchars($arquivo['arquivo']); ?>" target="_blank" class="text-blue-600 hover:underline">Ver</a>
+                            <form method="POST" class="inline" onsubmit="return confirm('Tem certeza?')">
+                                <input type="hidden" name="action" value="delete_arquivo">
+                                <input type="hidden" name="id" value="<?php echo $arquivo['id']; ?>">
+                                <button type="submit" class="text-red-600 hover:underline">Deletar</button>
+                            </form>
+                        </div>
+                    </li>
+                    <?php endforeach; ?>
+                </ul>
+                <?php else: ?>
+                <p class="text-gray-500 text-sm">Nenhum arquivo adicionado ainda</p>
+                <?php endif; ?>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php endforeach; ?>
+    
+    <?php endif; ?>
+
+</div>
+
+</body>
+</html>

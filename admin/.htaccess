@@ -1,0 +1,16 @@
+# Habilitar o mod_rewrite
+RewriteEngine On
+
+# Redirecionar se acessar com .php na URL
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.php -f
+RewriteRule ^(.*)\.php$ /admin/$1 [R=301,L]
+
+# Adicionar .php internamente se o arquivo existir
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.+)$ $1.php [L,QSA]
+
+# Definir index.php como arquivo padrão
+DirectoryIndex index.php index.html

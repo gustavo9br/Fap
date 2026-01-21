@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conselhos e Comitês - FAP PADUA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'green-primary': '#00A859',
+                        'blue-primary': '#1e3a8a'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50">
+
+<?php include 'includes/header.php'; ?>
+
+<!-- Banner Topo -->
+<section class="py-6">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="bg-gradient-to-br from-blue-600 to-blue-800 rounded-3xl p-10 shadow-xl relative overflow-hidden">
+            <!-- Efeito de fundo com círculos -->
+            <div class="absolute inset-0 opacity-10">
+                <div class="absolute top-0 right-0 w-96 h-96 bg-white rounded-full -mr-48 -mt-48"></div>
+                <div class="absolute bottom-0 left-0 w-96 h-96 bg-white rounded-full -ml-48 -mb-48"></div>
+            </div>
+            
+            <div class="relative z-10">
+                <!-- Breadcrumb -->
+                <nav class="mb-6">
+                    <ol class="flex items-center gap-2 text-white text-sm">
+                        <li>
+                            <a href="/" class="hover:underline flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+                                </svg>
+                                FAP PADUA
+                            </a>
+                        </li>
+                        <li class="text-white/70">›</li>
+                        <li class="font-semibold">CONSELHOS E COMITÊS</li>
+                    </ol>
+                </nav>
+
+                <!-- Título -->
+                <h1 class="text-white text-2xl md:text-3xl font-bold border-l-4 border-white pl-4">CONSELHOS E COMITÊS</h1>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Conteúdo -->
+<section class="py-6 bg-gray-100">
+    <div class="container mx-auto px-6 space-y-8">
+        
+        <!-- Introdução -->
+        <div class="bg-white rounded-2xl shadow-md p-8">
+            <p class="text-gray-700 text-lg leading-relaxed mb-4">
+                Os Conselhos e Comitês do FAP Padua são órgãos essenciais para a gestão democrática e transparente do Instituto de Previdência. Eles garantem a participação ativa dos segurados nas decisões e no acompanhamento das políticas previdenciárias.
+            </p>
+            <p class="text-gray-700 text-lg leading-relaxed">
+                Conheça abaixo os principais conselhos e comitês que atuam em nossa instituição.
+            </p>
+        </div>
+        
+        <!-- Conselho Administrativo -->
+        <div class="bg-white rounded-2xl shadow-md p-8">
+            <div class="flex items-start gap-4 mb-6">
+                <div class="text-5xl">👥</div>
+                <div>
+                    <h2 class="text-xl md:text-2xl font-bold mb-2" style="color: #B8621B;">
+                        Conselho Administrativo
+                    </h2>
+                    <p class="text-gray-600 text-sm">Órgão superior de deliberação</p>
+                </div>
+            </div>
+            
+            <p class="text-gray-700 leading-relaxed mb-6">
+                O Conselho Administrativo é o órgão máximo de deliberação do Instituto, responsável por definir as políticas gerais de administração e fiscalização do sistema previdenciário municipal.
+            </p>
+            
+            <div class="bg-gray-50 rounded-lg p-6">
+                <h3 class="font-bold text-gray-800 mb-3">Principais Atribuições:</h3>
+                <ul class="space-y-2 text-gray-700">
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-primary mt-1">•</span>
+                        <span>Aprovar planos e programas anuais e plurianuais</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-primary mt-1">•</span>
+                        <span>Deliberar sobre a concessão de benefícios</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-primary mt-1">•</span>
+                        <span>Aprovar o orçamento anual e suas alterações</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-primary mt-1">•</span>
+                        <span>Fiscalizar a gestão administrativa e financeira</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Conselho Fiscal -->
+        <div class="bg-white rounded-2xl shadow-md p-8">
+            <div class="flex items-start gap-4 mb-6">
+                <div class="text-5xl">📊</div>
+                <div>
+                    <h2 class="text-xl md:text-2xl font-bold mb-2" style="color: #B8621B;">
+                        Conselho Fiscal
+                    </h2>
+                    <p class="text-gray-600 text-sm">Fiscalização e controle interno</p>
+                </div>
+            </div>
+            
+            <p class="text-gray-700 leading-relaxed mb-6">
+                O Conselho Fiscal é responsável pela fiscalização permanente da gestão econômico-financeira do Instituto, zelando pela correta aplicação dos recursos e pela transparência nas contas.
+            </p>
+            
+            <div class="bg-gray-50 rounded-lg p-6">
+                <h3 class="font-bold text-gray-800 mb-3">Principais Atribuições:</h3>
+                <ul class="space-y-2 text-gray-700">
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-primary mt-1">•</span>
+                        <span>Examinar balanços e demonstrações financeiras</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-primary mt-1">•</span>
+                        <span>Fiscalizar a aplicação dos recursos e investimentos</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-primary mt-1">•</span>
+                        <span>Emitir parecer sobre prestação de contas</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-primary mt-1">•</span>
+                        <span>Acompanhar a execução orçamentária</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Comitê de Investimentos -->
+        <div class="bg-white rounded-2xl shadow-md p-8">
+            <div class="flex items-start gap-4 mb-6">
+                <div class="text-5xl">💰</div>
+                <div>
+                    <h2 class="text-xl md:text-2xl font-bold mb-2" style="color: #B8621B;">
+                        Comitê de Investimentos
+                    </h2>
+                    <p class="text-gray-600 text-sm">Gestão estratégica dos recursos</p>
+                </div>
+            </div>
+            
+            <p class="text-gray-700 leading-relaxed mb-6">
+                O Comitê de Investimentos é responsável pela definição e acompanhamento da política de investimentos do Instituto, buscando a melhor rentabilidade com segurança e liquidez dos recursos previdenciários.
+            </p>
+            
+            <div class="bg-gray-50 rounded-lg p-6">
+                <h3 class="font-bold text-gray-800 mb-3">Principais Atribuições:</h3>
+                <ul class="space-y-2 text-gray-700">
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-primary mt-1">•</span>
+                        <span>Definir política de investimentos conforme legislação</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-primary mt-1">•</span>
+                        <span>Aprovar alocação de recursos em diferentes ativos</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-primary mt-1">•</span>
+                        <span>Monitorar performance da carteira de investimentos</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-primary mt-1">•</span>
+                        <span>Avaliar riscos e oportunidades de mercado</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Comitê de Auditoria -->
+        <div class="bg-white rounded-2xl shadow-md p-8">
+            <div class="flex items-start gap-4 mb-6">
+                <div class="text-5xl">🔍</div>
+                <div>
+                    <h2 class="text-xl md:text-2xl font-bold mb-2" style="color: #B8621B;">
+                        Comitê de Auditoria
+                    </h2>
+                    <p class="text-gray-600 text-sm">Controle e conformidade</p>
+                </div>
+            </div>
+            
+            <p class="text-gray-700 leading-relaxed mb-6">
+                O Comitê de Auditoria atua no monitoramento dos processos de controle interno, gestão de riscos e conformidade, assegurando a qualidade e confiabilidade das informações institucionais.
+            </p>
+            
+            <div class="bg-gray-50 rounded-lg p-6">
+                <h3 class="font-bold text-gray-800 mb-3">Principais Atribuições:</h3>
+                <ul class="space-y-2 text-gray-700">
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-primary mt-1">•</span>
+                        <span>Supervisionar atividades de auditoria interna</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-primary mt-1">•</span>
+                        <span>Avaliar sistema de controles internos</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-primary mt-1">•</span>
+                        <span>Recomendar melhorias nos processos</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-primary mt-1">•</span>
+                        <span>Acompanhar cumprimento de normas e regulamentos</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Participação -->
+        <div class="bg-gradient-to-br from-blue-600 to-blue-800 text-white rounded-2xl shadow-md p-8">
+            <h2 class="text-xl md:text-2xl font-bold mb-4">
+                Participe da Gestão
+            </h2>
+            <p class="text-white/90 leading-relaxed mb-6">
+                A participação dos segurados nos conselhos e comitês fortalece a gestão democrática e transparente do Instituto. Fique atento aos editais de eleição e representação.
+            </p>
+            <div class="flex flex-wrap gap-4">
+                <a href="contato" class="inline-block bg-white text-blue-800 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                    Entre em Contato
+                </a>
+                <a href="transparencia" class="inline-block bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/30 transition-colors">
+                    Ver Transparência
+                </a>
+            </div>
+        </div>
+        
+    </div>
+</section>
+
+<?php include 'includes/footer.php'; ?>
+
+</body>
+</html>
