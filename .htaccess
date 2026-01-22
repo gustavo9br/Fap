@@ -1,3 +1,9 @@
+# Definir index.php como arquivo padrão (IMPORTANTE - deve vir primeiro)
+DirectoryIndex index.php index.html
+
+# Desabilitar listagem de diretórios
+Options -Indexes
+
 # Habilitar o mod_rewrite
 RewriteEngine On
 
@@ -42,7 +48,6 @@ RewriteRule ^avaliacao-atuarial/?$ pagina.php?slug=avaliacao-atuarial [L,QSA]
 RewriteRule ^certificados-certidoes/?$ pagina.php?slug=certificados-certidoes [L,QSA]
 
 # Rota genérica para outras páginas de acesso rápido (fallback)
-# Atenção: Deve vir ANTES da regra de adicionar .php
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.php !-f
@@ -59,6 +64,3 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.php -f
 RewriteRule ^(.+)$ $1.php [L,QSA]
-
-# Definir index.php como arquivo padrão
-DirectoryIndex index.php index.html
