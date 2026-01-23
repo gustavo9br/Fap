@@ -185,13 +185,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </a>
                 </div>
             </div>
-
-            <!-- Informações de Acesso Padrão (remover em produção) -->
-            <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <p class="text-xs text-blue-800 font-semibold mb-2">🔐 Credenciais de teste:</p>
-                <p class="text-xs text-blue-700"><strong>Admin:</strong> admin@fappadua.com.br / admin123</p>
-                <p class="text-xs text-blue-700"><strong>Editor:</strong> editor@fappadua.com.br / editor123</p>
-            </div>
         </div>
     </div>
 </body>
