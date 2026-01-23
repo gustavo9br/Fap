@@ -137,7 +137,7 @@ include 'includes/header.php';
 
 <!-- Conteúdo -->
 <section class="py-6 bg-gray-100">
-    <div class="container mx-auto px-6">
+    <div class="max-w-7xl mx-auto px-4">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Conteúdo Principal -->
             <div class="lg:col-span-2">
@@ -151,50 +151,73 @@ include 'includes/header.php';
                             <p class="text-gray-500 text-lg">Nenhuma notícia encontrada</p>
                         </div>
                     <?php else: ?>
-                        <?php foreach ($noticias as $noticia): ?>
+                        <?php foreach ($noticias as $noticia): 
+                            // Garantir que o caminho da imagem está correto
+                            $imagem_path = $noticia['imagem_destaque'] ?? '';
+                            if (!empty($imagem_path) && substr($imagem_path, 0, 1) !== '/') {
+                                $imagem_path = '/' . $imagem_path;
+                            }
+                        ?>
                             <article class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-all">
-                                <?php if ($noticia['imagem_destaque']): ?>
-                                    <a href="noticia/<?= htmlspecialchars($noticia['slug']) ?>">
-                                        <img src="<?= htmlspecialchars($noticia['imagem_destaque']) ?>" 
+                                <?php if (!empty($imagem_path)): ?>
+                                    <a href="noticia/<?= htmlspecialchars($noticia['slug']) ?>" class="block">
+                                        <img src="<?= htmlspecialchars($imagem_path) ?>" 
                                              alt="<?= htmlspecialchars($noticia['titulo']) ?>"
-                                             class="w-full h-64 object-cover hover:opacity-90 transition-opacity">
+                                             class="w-full h-64 object-cover hover:opacity-90 transition-opacity"
+                                             onerror="this.parentElement.style.display='none'">
                                     </a>
                                 <?php endif; ?>
                                 
                                 <div class="p-6">
                                     <div class="flex items-center gap-3 mb-3 text-sm text-gray-500 flex-wrap">
+                                        <?php if (!empty($noticia['categoria'])): ?>
                                         <a href="noticias?categoria=<?= htmlspecialchars($noticia['categoria']) ?>" 
-                                           class="px-3 py-1 bg-green-100 text-green-800 rounded-full font-medium hover:bg-green-200">
+                                           class="px-3 py-1 bg-green-100 text-green-800 rounded-full font-medium hover:bg-green-200 transition-colors">
                                             <?= htmlspecialchars($noticia['categoria']) ?>
                                         </a>
                                         <span>•</span>
-                                        <time><?= date('d/m/Y H:i', strtotime($noticia['publicado_em'])) ?></time>
+                                        <?php endif; ?>
+                                        <time class="flex items-center gap-1">
+                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                                            </svg>
+                                            <?= date('d/m/Y \à\s H:i', strtotime($noticia['publicado_em'])) ?>
+                                        </time>
                                         <span>•</span>
-                                        <span><?= $noticia['visualizacoes'] ?? 0 ?> visualizações</span>
+                                        <span class="flex items-center gap-1">
+                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                                                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
+                                            </svg>
+                                            <?= $noticia['visualizacoes'] ?? 0 ?> visualizações
+                                        </span>
                                     </div>
                                     
-                                    <h2 class="text-2xl font-bold text-gray-800 mb-3 hover:text-green-primary transition-colors">
+                                    <h2 class="text-2xl font-bold mb-3 hover:text-green-primary transition-colors" style="color: #B8621B;">
                                         <a href="noticia/<?= htmlspecialchars($noticia['slug']) ?>">
                                             <?= htmlspecialchars($noticia['titulo']) ?>
                                         </a>
                                     </h2>
                                     
-                                    <?php if ($noticia['resumo']): ?>
-                                        <p class="text-gray-600 mb-4 line-clamp-3">
+                                    <?php if (!empty($noticia['resumo'])): ?>
+                                        <p class="text-gray-700 mb-4 leading-relaxed line-clamp-3">
                                             <?= htmlspecialchars($noticia['resumo']) ?>
                                         </p>
                                     <?php endif; ?>
                                     
-                                    <div class="flex items-center justify-between">
+                                    <div class="flex items-center justify-between pt-4 border-t border-gray-100">
                                         <a href="noticia/<?= htmlspecialchars($noticia['slug']) ?>" 
-                                           class="inline-flex items-center text-green-primary font-medium hover:text-green-700">
+                                           class="inline-flex items-center gap-2 bg-green-primary text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-green-700 transition-colors">
                                             Leia mais
-                                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                             </svg>
                                         </a>
-                                        <span class="text-sm text-gray-400">
-                                            Por <?= htmlspecialchars($noticia['autor_nome']) ?>
+                                        <span class="text-sm text-gray-500 flex items-center gap-2">
+                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                                            </svg>
+                                            <?= htmlspecialchars($noticia['autor_nome']) ?>
                                         </span>
                                     </div>
                                 </div>
