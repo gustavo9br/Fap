@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $caminhoCompleto = $uploadDir . $nomeArquivo;
                 
                 if (move_uploaded_file($arquivo['tmp_name'], $caminhoCompleto)) {
-                    $arquivo_path = 'uploads/demonstrativos/' . $nomeArquivo;
+                    $arquivo_path = '/uploads/demonstrativos/' . $nomeArquivo;
                 } else {
                     $erros[] = 'Erro ao fazer upload do arquivo.';
                 }
@@ -105,8 +105,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $stmt->execute([$arquivo_id, $categoria_id]);
         $arquivo = $stmt->fetch();
         
-        if ($arquivo && $arquivo['arquivo'] && file_exists('../' . $arquivo['arquivo'])) {
-            unlink('../' . $arquivo['arquivo']);
+        if ($arquivo && $arquivo['arquivo'] && file_exists('../' . ltrim($arquivo['arquivo'], '/'))) {
+            unlink('../' . ltrim($arquivo['arquivo'], '/'));
         }
         
         $stmt = $pdo->prepare("DELETE FROM demonstrativos WHERE id = ? AND categoria_id = ?");

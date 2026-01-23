@@ -1,5 +1,6 @@
 <?php
 require_once 'config/database.php';
+require_once 'includes/functions.php';
 
 $pdo = Database::getInstance()->getConnection();
 
@@ -137,7 +138,7 @@ $secoes = $stmt->fetchAll();
                                 <svg class="w-5 h-5 text-green-primary flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                                 </svg>
-                                <a href="<?php echo htmlspecialchars($arquivo['arquivo_path']); ?>" target="_blank" class="flex-grow text-gray-700 hover:text-green-primary">
+                                <a href="<?php echo htmlspecialchars(normalizar_caminho_arquivo($arquivo['arquivo_path'])); ?>" target="_blank" class="flex-grow text-gray-700 hover:text-green-primary">
                                     <?php echo htmlspecialchars($arquivo['titulo']); ?>
                                 </a>
                             </div>

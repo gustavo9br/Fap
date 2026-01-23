@@ -1,5 +1,6 @@
 <?php
 require_once 'config/database.php';
+require_once 'includes/functions.php';
 
 $pdo = Database::getInstance()->getConnection();
 
@@ -196,7 +197,7 @@ $pageTitleUpper = mb_strtoupper($card['titulo']);
                             <div class="bg-gray-100 rounded-lg overflow-hidden">
                                 <a href="<?php 
                                     if (count($ano['arquivos']) === 1) {
-                                        echo $ano['arquivos'][0]['arquivo_path'];
+                                        echo normalizar_caminho_arquivo($ano['arquivos'][0]['arquivo_path']);
                                     } else {
                                         echo '#';
                                     }
@@ -220,7 +221,7 @@ $pageTitleUpper = mb_strtoupper($card['titulo']);
                                 <div class="accordion-content <?php echo $isFirst ? 'open' : ''; ?>">
                                     <div class="p-3 border-t border-gray-200 space-y-2">
                                         <?php foreach ($ano['arquivos'] as $arquivo): ?>
-                                        <a href="<?php echo $arquivo['arquivo_path']; ?>" target="_blank" class="flex items-center gap-2 p-2 hover:bg-white rounded text-sm text-gray-600 hover:text-green-600">
+                                        <a href="<?php echo htmlspecialchars(normalizar_caminho_arquivo($arquivo['arquivo_path'])); ?>" target="_blank" class="flex items-center gap-2 p-2 hover:bg-white rounded text-sm text-gray-600 hover:text-green-600">
                                             <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/></svg>
                                             <?php echo htmlspecialchars($arquivo['titulo']); ?>
                                         </a>
@@ -238,7 +239,7 @@ $pageTitleUpper = mb_strtoupper($card['titulo']);
                     <div class="bg-gray-100 rounded-lg overflow-hidden">
                         <a href="<?php 
                             if (count($ano['arquivos']) === 1) {
-                                echo $ano['arquivos'][0]['arquivo_path'];
+                                echo normalizar_caminho_arquivo($ano['arquivos'][0]['arquivo_path']);
                             } else {
                                 echo '#';
                             }
@@ -262,7 +263,7 @@ $pageTitleUpper = mb_strtoupper($card['titulo']);
                         <div class="accordion-content <?php echo $isFirst ? 'open' : ''; ?>">
                             <div class="p-4 border-t border-gray-200 space-y-2">
                                 <?php foreach ($ano['arquivos'] as $arquivo): ?>
-                                <a href="<?php echo $arquivo['arquivo_path']; ?>" target="_blank" class="flex items-center gap-2 p-2 hover:bg-white rounded text-sm text-gray-600 hover:text-green-600">
+                                <a href="<?php echo htmlspecialchars(normalizar_caminho_arquivo($arquivo['arquivo_path'])); ?>" target="_blank" class="flex items-center gap-2 p-2 hover:bg-white rounded text-sm text-gray-600 hover:text-green-600">
                                     <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/></svg>
                                     <?php echo htmlspecialchars($arquivo['titulo']); ?>
                                 </a>

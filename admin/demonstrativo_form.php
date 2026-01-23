@@ -93,10 +93,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             if (move_uploaded_file($arquivo['tmp_name'], $caminhoCompleto)) {
                 // Deletar arquivo antigo se houver
-                if ($arquivo_atual && file_exists('../' . $arquivo_atual)) {
-                    unlink('../' . $arquivo_atual);
+                if ($arquivo_atual && file_exists('../' . ltrim($arquivo_atual, '/'))) {
+                    unlink('../' . ltrim($arquivo_atual, '/'));
                 }
-                $arquivo_path = 'uploads/demonstrativos/' . $nomeArquivo;
+                $arquivo_path = '/uploads/demonstrativos/' . $nomeArquivo;
             } else {
                 $erros[] = 'Erro ao fazer upload do arquivo.';
             }

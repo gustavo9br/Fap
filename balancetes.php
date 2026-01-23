@@ -1,5 +1,6 @@
 <?php
 require_once 'config/database.php';
+require_once 'includes/functions.php';
 
 $pdo = Database::getInstance()->getConnection();
 
@@ -105,7 +106,7 @@ foreach ($categorias as $categoria) {
                         
                         <div class="space-y-1">
                             <?php foreach ($bals as $bal): ?>
-                                <a href="<?php echo htmlspecialchars($bal['arquivo']); ?>" 
+                                <a href="<?php echo htmlspecialchars(normalizar_caminho_arquivo($bal['arquivo'])); ?>" 
                                    target="_blank"
                                    class="flex items-center gap-3 p-2 hover:bg-gray-50 rounded transition-colors group">
                                     <!-- Ícone PDF -->

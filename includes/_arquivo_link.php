@@ -1,8 +1,11 @@
 <?php
 // Componente de link para arquivo
 // Variável disponível: $arquivo
+if (!function_exists('normalizar_caminho_arquivo')) {
+    require_once __DIR__ . '/functions.php';
+}
 ?>
-<a href="<?php echo htmlspecialchars($arquivo['arquivo_path']); ?>" target="_blank" 
+<a href="<?php echo htmlspecialchars(normalizar_caminho_arquivo($arquivo['arquivo_path'])); ?>" target="_blank" 
    class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 border border-gray-100 hover:border-green-300 transition-all group">
     <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
         <svg class="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20">

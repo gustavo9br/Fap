@@ -1,5 +1,6 @@
 <?php
 require_once 'config/database.php';
+require_once 'includes/functions.php';
 
 $pdo = Database::getInstance()->getConnection();
 
@@ -125,7 +126,7 @@ $totalAnos = count($porAno);
                     
                     <div id="ano-<?php echo $ano; ?>" class="<?php echo $first ? '' : 'hidden'; ?> px-4 pb-4 space-y-2">
                         <?php foreach ($balancetesAno as $bal): ?>
-                        <a href="<?php echo htmlspecialchars($bal['arquivo']); ?>" 
+                        <a href="<?php echo htmlspecialchars(normalizar_caminho_arquivo($bal['arquivo'])); ?>" 
                            target="_blank"
                            class="flex items-center gap-3 p-4 bg-white rounded-xl hover:shadow-md transition-all group">
                             <svg class="w-5 h-5 text-green-primary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
