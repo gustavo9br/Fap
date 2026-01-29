@@ -157,7 +157,7 @@
             <div class="bg-white rounded-2xl shadow-md p-6 text-center">
                 <div class="text-4xl mb-3">✉️</div>
                 <h3 class="font-bold text-gray-800 mb-2">E-mail</h3>
-                <p class="text-gray-600 text-sm">fap@santoantoniodepadua.rj.gov.br</p>
+                <p class="text-gray-600 text-sm">fap@padua.rj.gov.br</p>
             </div>
             
             <div class="bg-white rounded-2xl shadow-md p-6 text-center">

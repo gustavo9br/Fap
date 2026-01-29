@@ -21,7 +21,7 @@
                     <h3 class="text-base md:text-lg font-bold mb-3 md:mb-4">Contato</h3>
                     <div class="space-y-2 text-xs md:text-sm text-blue-100">
                         <p><i class="fas fa-phone mr-2"></i> (22) 3851-0077</p>
-                        <p><i class="fas fa-envelope mr-2"></i> fap@santoantoniodepadua.rj.gov.br</p>
+                        <p><i class="fas fa-envelope mr-2"></i> fap@padua.rj.gov.br</p>
                     </div>
                 </div>
                 
