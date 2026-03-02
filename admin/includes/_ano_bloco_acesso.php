@@ -18,7 +18,7 @@ if (isset($anos_sub)) {
         <div class="flex items-center gap-2">
             <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
             <span class="font-semibold text-gray-700" id="ano_<?= $ano['id'] ?>_titulo"><?= $ano['ano'] ?></span>
-            <button onclick="editarAno(<?= $ano['id'] ?>, <?= $ano['ano'] ?>)" class="text-gray-400 hover:text-blue-600" title="Editar ano">
+            <button onclick="editarAno(<?= $ano['id'] ?>, '<?= addslashes($ano['ano']) ?>')" class="text-gray-400 hover:text-blue-600" title="Editar ano">
                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
             </button>
         </div>
@@ -80,10 +80,13 @@ function editarAno(id, anoAtual) {
     const form = document.createElement('form');
     form.method = 'POST';
     form.className = 'flex items-center gap-2';
+
+    const safeValue = String(anoAtual).replace(/"/g, '&quot;');
+
     form.innerHTML = `
         <input type="hidden" name="action" value="update_ano">
         <input type="hidden" name="ano_id" value="${id}">
-        <input type="number" name="ano" value="${anoAtual}" min="2000" max="2100" class="border rounded px-2 py-1 text-sm w-20" required>
+        <input type="text" name="ano" value="${safeValue}" class="border rounded px-2 py-1 text-sm w-32" required>
         <button type="submit" class="bg-blue-600 text-white px-2 py-1 rounded text-xs hover:bg-blue-700">OK</button>
         <button type="button" onclick="location.reload()" class="bg-gray-300 px-2 py-1 rounded text-xs hover:bg-gray-400">X</button>
     `;

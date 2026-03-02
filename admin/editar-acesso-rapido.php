@@ -426,11 +426,11 @@ include 'includes/header.php';
                 </form>
             </div>
             <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                <h3 class="text-sm font-semibold text-blue-700 mb-3">📅 Novo Ano (direto na seção)</h3>
+                <h3 class="text-sm font-semibold text-blue-700 mb-3">📅 Novo Ano / Rótulo (direto na seção)</h3>
                 <form method="POST" class="flex gap-2">
                     <input type="hidden" name="action" value="add_ano">
                     <input type="hidden" name="secao_id" value="<?= $secao['id'] ?>">
-                    <input type="number" name="ano" placeholder="Ex: 2025" required min="2000" max="2100" class="w-28 border border-blue-300 rounded px-3 py-2 text-sm">
+                    <input type="text" name="ano" placeholder="Ex: 2025, 01/2025, Nome" required class="w-40 border border-blue-300 rounded px-3 py-2 text-sm">
                     <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded text-sm hover:bg-blue-600">+ Ano</button>
                 </form>
             </div>
@@ -474,7 +474,7 @@ include 'includes/header.php';
                         <input type="hidden" name="action" value="add_ano">
                         <input type="hidden" name="secao_id" value="<?= $secao['id'] ?>">
                         <input type="hidden" name="subsecao_id" value="<?= $subsecao['id'] ?>">
-                        <input type="number" name="ano" placeholder="Ano" required min="2000" max="2100" class="w-24 border border-purple-300 rounded px-2 py-1 text-sm">
+                        <input type="text" name="ano" placeholder="Ano / Rótulo" required class="w-40 border border-purple-300 rounded px-2 py-1 text-sm">
                         <button type="submit" class="bg-purple-500 text-white px-3 py-1 rounded text-sm hover:bg-purple-600">+ Ano</button>
                     </form>
                     
