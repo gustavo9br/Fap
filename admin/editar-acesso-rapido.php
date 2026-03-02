@@ -276,9 +276,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $titulo = 'Documento';
         }
         
-        if (move_uploaded_file($file['tmp_name'], $file_path)) {
-            $stmt = $pdo->prepare("INSERT INTO acesso_rapido_arquivos (ano_id, titulo, arquivo_path) VALUES (?, ?, ?)");
-            $stmt->execute([$_POST['ano_id'], $titulo, '/uploads/acesso-rapido/' . $file_name]);
+        $ano_id = !empty($_POST['ano_id']) ? (int)$_POST['ano_id'] : null;
+        $secao_id_doc = !empty($_POST['secao_id']) ? (int)$_POST['secao_id'] : null;
+        $subsecao_id_doc = !empty($_POST['subsecao_id']) ? (int)$_POST['subsecao_id'] : null;
+        
+        if ($ano_id || $secao_id_doc) {
+            if (move_uploaded_file($file['tmp_name'], $file_path)) {
+                $stmt = $pdo->prepare("INSERT INTO acesso_rapido_arquivos (ano_id, secao_id, subsecao_id, titulo, arquivo_path) VALUES (?, ?, ?, ?, ?)");
+                $stmt->execute([
+                    $ano_id,
+                    $secao_id_doc,
+                    $subsecao_id_doc,
+                    $titulo,
+                    '/uploads/acesso-rapido/' . $file_name
+                ]);
+            }
         }
         header("Location: editar-acesso-rapido.php?id=$card_id&success=1");
         exit;
@@ -387,6 +399,15 @@ include 'includes/header.php';
             $st->execute([$sub['id']]);
             $totalSecao += $st->rowCount();
         }
+        // Documentos diretos da seção (sem ano/subseção)
+        $st = $pdo->prepare("SELECT COUNT(*) FROM acesso_rapido_arquivos WHERE secao_id = ? AND (ano_id IS NULL OR ano_id = 0)");
+        $st->execute([$secao['id']]);
+        $totalSecao += (int)$st->fetchColumn();
+
+        // Buscar documentos diretos da seção para exibir abaixo
+        $stmt_docs_secao = $pdo->prepare("SELECT * FROM acesso_rapido_arquivos WHERE secao_id = ? AND (ano_id IS NULL OR ano_id = 0) ORDER BY id ASC");
+        $stmt_docs_secao->execute([$secao['id']]);
+        $arquivos_secao = $stmt_docs_secao->fetchAll();
     ?>
     <div class="bg-white rounded-xl shadow-md p-6">
         <div class="flex items-center justify-between mb-4 pb-4 border-b-2 border-blue-500">
@@ -430,10 +451,47 @@ include 'includes/header.php';
                 <form method="POST" class="flex gap-2">
                     <input type="hidden" name="action" value="add_ano">
                     <input type="hidden" name="secao_id" value="<?= $secao['id'] ?>">
-                    <input type="text" name="ano" placeholder="Ex: 2025, 01/2025, Nome" required class="w-40 border border-blue-300 rounded px-3 py-2 text-sm">
+                    <input type="text" name="ano" placeholder="Ex: 2025, 01/2025, Nc" required class="w-40 border border-blue-300 rounded px-3 py-2 text-sm">
                     <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded text-sm hover:bg-blue-600">+ Ano</button>
                 </form>
             </div>
+        </div>
+
+        <!-- Documentos diretamente na seção (sem ano/subseção) -->
+        <div class="bg-blue-50 rounded-lg p-4 border border-blue-200 mb-6">
+            <div class="flex items-center justify-end mb-2">
+                <button type="button" onclick="abrirModalDocumentoSecao(<?= $secao['id'] ?>)" class="inline-flex items-center gap-1 bg-blue-600 text-white px-3 py-1 rounded text-xs font-semibold hover:bg-blue-700 transition-colors">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    Doc
+                </button>
+            </div>
+            <?php if (!empty($arquivos_secao)): ?>
+            <div class="space-y-1 ml-6">
+                <?php foreach ($arquivos_secao as $arquivo): ?>
+                <div class="flex items-center justify-between text-sm bg-white rounded px-3 py-2 border border-gray-100">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/></svg>
+                        <span class="text-gray-700"><?= htmlspecialchars($arquivo['titulo']) ?></span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <a href="<?= $arquivo['arquivo_path'] ?>" target="_blank" class="text-blue-500 hover:text-blue-700" title="Visualizar documento">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                        </a>
+                        <button onclick="editarDocumento(<?= $arquivo['id'] ?>, '<?= addslashes($arquivo['titulo']) ?>')" class="text-yellow-500 hover:text-yellow-700" title="Editar">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                        </button>
+                        <form method="POST" class="inline" onsubmit="return confirm('Excluir documento?')"><input type="hidden" name="action" value="delete_arquivo"><input type="hidden" name="arquivo_id" value="<?= $arquivo['id'] ?>">
+                            <button class="text-red-400 hover:text-red-600" title="Excluir">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <?php else: ?>
+            <p class="text-xs text-blue-900/70 ml-6 italic">Nenhum documento nesta seção. Clique em "Doc" para enviar.</p>
+            <?php endif; ?>
         </div>
 
         <?php foreach ($itens_secao as $item_idx => $item): ?>
@@ -525,6 +583,8 @@ include 'includes/header.php';
         <form method="POST" enctype="multipart/form-data" class="space-y-4">
             <input type="hidden" name="action" value="add_arquivo">
             <input type="hidden" name="ano_id" id="modal_ano_id">
+            <input type="hidden" name="secao_id" id="modal_secao_id">
+            <input type="hidden" name="subsecao_id" id="modal_subsecao_id">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Título do documento</label>
                 <div class="flex gap-2 mb-2">
@@ -621,8 +681,20 @@ function editarInline(tipo, id, valorAtual) {
 
 function abrirModalDocumento(anoId) {
     document.getElementById('modal_ano_id').value = anoId;
+    document.getElementById('modal_secao_id').value = '';
+    document.getElementById('modal_subsecao_id').value = '';
     document.getElementById('modalDocumento').classList.remove('hidden');
     usarTipoMes();
+    document.getElementById('selectTituloMes').value = '';
+    document.getElementById('inputTituloPersonalizado').value = '';
+}
+
+function abrirModalDocumentoSecao(secaoId) {
+    document.getElementById('modal_ano_id').value = '';
+    document.getElementById('modal_secao_id').value = secaoId;
+    document.getElementById('modal_subsecao_id').value = '';
+    document.getElementById('modalDocumento').classList.remove('hidden');
+    usarTipoPersonalizado();
     document.getElementById('selectTituloMes').value = '';
     document.getElementById('inputTituloPersonalizado').value = '';
 }

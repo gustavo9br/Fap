@@ -135,8 +135,8 @@ function buscarOrigemArquivo($pdo, $caminho) {
         ];
     }
     
-    // Acesso Rápido Arquivos
-    $stmt = $pdo->prepare("SELECT aa.id, aa.titulo, aa.arquivo_path, asec.titulo as secao_titulo, ac.titulo as card_titulo, ac.slug
+    // Acesso Rápido Arquivos (vinculados a ano)
+    $stmt = $pdo->prepare("SELECT aa.id, aa.titulo, aa.arquivo_path, asec.titulo as secao_titulo, ac.titulo as card_titulo, ac.slug, ac.id as card_id
                            FROM acesso_rapido_arquivos aa
                            JOIN acesso_rapido_anos aa_anos ON aa.ano_id = aa_anos.id
                            JOIN acesso_rapido_secoes asec ON aa_anos.secao_id = asec.id
@@ -150,7 +150,26 @@ function buscarOrigemArquivo($pdo, $caminho) {
             'titulo' => $ara['titulo'],
             'secao' => $ara['secao_titulo'],
             'card' => $ara['card_titulo'],
-            'link' => "editar-acesso-rapido.php?id=" . $ara['id'],
+            'link' => "editar-acesso-rapido.php?id=" . $ara['card_id'],
+            'publico' => "/" . $ara['slug']
+        ];
+    }
+
+    // Acesso Rápido Arquivos (vinculados diretamente à seção)
+    $stmt = $pdo->prepare("SELECT aa.id, aa.titulo, aa.arquivo_path, asec.titulo as secao_titulo, ac.titulo as card_titulo, ac.slug, ac.id as card_id
+                           FROM acesso_rapido_arquivos aa
+                           JOIN acesso_rapido_secoes asec ON aa.secao_id = asec.id
+                           JOIN acesso_rapido_cards ac ON asec.card_id = ac.id
+                           WHERE (aa.ano_id IS NULL OR aa.ano_id = 0) AND (aa.arquivo_path = ? OR aa.arquivo_path = ?)");
+    $stmt->execute([$caminhoNormalizado, $caminhoSemBarra]);
+    $acessoRapidoArquivosSecao = $stmt->fetchAll();
+    foreach ($acessoRapidoArquivosSecao as $ara) {
+        $origens[] = [
+            'tipo' => 'Acesso Rápido (Arquivo - Seção)',
+            'titulo' => $ara['titulo'],
+            'secao' => $ara['secao_titulo'],
+            'card' => $ara['card_titulo'],
+            'link' => "editar-acesso-rapido.php?id=" . $ara['card_id'],
             'publico' => "/" . $ara['slug']
         ];
     }

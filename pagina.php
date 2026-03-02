@@ -56,6 +56,11 @@ foreach ($secoes as $secao) {
         return ($a['ordem_geral'] ?? 0) - ($b['ordem_geral'] ?? 0);
     });
     
+    // Documentos diretos da seção (sem ano/subseção)
+    $stmt = $pdo->prepare("SELECT * FROM acesso_rapido_arquivos WHERE secao_id = ? AND (ano_id IS NULL OR ano_id = 0) ORDER BY id ASC");
+    $stmt->execute([$secao['id']]);
+    $secao['arquivos_diretos'] = $stmt->fetchAll();
+
     // Processar cada item
     $secao['itens'] = [];
     foreach ($itens as $item) {
@@ -87,6 +92,7 @@ foreach ($secoes as $secao) {
 // Contar total de documentos
 $totalDocs = 0;
 foreach ($conteudo as $secao) {
+    $totalDocs += count($secao['arquivos_diretos'] ?? []);
     foreach ($secao['itens'] as $item) {
         if ($item['tipo'] === 'subsecao') {
             foreach ($item['anos'] as $ano) {
@@ -181,7 +187,20 @@ $pageTitleUpper = mb_strtoupper($card['titulo']);
                 <span class="w-1.5 h-8 bg-green-primary rounded-full"></span>
                 <?php echo htmlspecialchars($secao['titulo']); ?>
             </h2>
-            
+
+            <?php if (!empty($secao['arquivos_diretos'])): ?>
+            <div class="mb-6">
+                <div class="space-y-2 ml-1">
+                    <?php foreach ($secao['arquivos_diretos'] as $arquivo): ?>
+                    <a href="<?php echo $arquivo['arquivo_path']; ?>" target="_blank" class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 text-sm text-gray-700 hover:text-green-primary">
+                        <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/></svg>
+                        <span><?php echo htmlspecialchars($arquivo['titulo']); ?></span>
+                    </a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php endif; ?>
+
             <?php if (empty($secao['itens'])): ?>
             <p class="text-gray-500 text-center py-4">Nenhum documento nesta seção ainda.</p>
             <?php else: ?>
